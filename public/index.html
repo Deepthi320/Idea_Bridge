@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idea Bridge — Connect Ideas with Implementers</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-icon">🌉</div>
+        <div class="brand-text">
+          <h1>Idea Bridge</h1>
+          <span class="tagline">From Spark to Solution</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnNewIdea" class="btn btn-primary">
+          <span class="btn-icon">＋</span> Submit New Idea
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Hero / Stats Dashboard -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h2>Bridge the Gap Between Vision & Execution</h2>
+        <p>A collaborative open ecosystem where creators pitch ideas, builders assemble teams, and projects journey from initial spark to completion.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statTotalIdeas">0</div>
+          <div class="stat-label">Total Ideas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statActiveProjects">0</div>
+          <div class="stat-label">Active Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statCollaborators">0</div>
+          <div class="stat-label">Collaborators</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statCompleted">0</div>
+          <div class="stat-label">Completed Bridges</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls / Filters -->
+    <section class="controls-section">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search ideas by title, description, or tags..." autocomplete="off">
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-group">
+          <label for="categoryFilter">Category:</label>
+          <select id="categoryFilter">
+            <option value="All">All Categories</option>
+            <option value="Technology">Technology</option>
+            <option value="Sustainability">Sustainability</option>
+            <option value="Education">Education</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Civic Tech">Civic Tech</option>
+            <option value="Creative">Creative</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="stageFilter">Stage:</label>
+          <select id="stageFilter">
+            <option value="All">All Stages</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Discussion">Discussion</option>
+            <option value="Looking for Team">Looking for Team</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortBy">Sort By:</label>
+          <select id="sortBy">
+            <option value="votes">Most Upvoted</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Alphabetical</option>
+          </select>
+        </div>
+
+        <button id="btnResetFilters" class="btn btn-secondary">Reset</button>
+      </div>
+    </section>
+
+    <!-- Ideas Feed -->
+    <section class="ideas-feed-section">
+      <div class="section-header">
+        <h3 id="feedHeading">Exploration Feed</h3>
+        <span class="count-badge" id="resultsCount">0 ideas</span>
+      </div>
+
+      <div id="ideasGrid" class="ideas-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">💡</div>
+        <h4>No ideas found</h4>
+        <p>No matching ideas found for your current filter selection. Try adjusting your query or create a brand new idea bridge!</p>
+        <button id="btnEmptyNew" class="btn btn-primary">Submit First Idea</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: New Idea Form -->
+  <div id="newIdeaModal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Create New Idea Bridge</h3>
+        <button class="modal-close" id="btnCloseNewModal">&times;</button>
+      </div>
+      <form id="newIdeaForm" class="modal-body">
+        <div class="form-group">
+          <label for="formTitle">Idea Title <span class="required">*</span></label>
+          <input type="text" id="formTitle" required placeholder="e.g., SolarPowered IoT Water Quality Monitor" maxlength="120">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="formCategory">Category <span class="required">*</span></label>
+            <select id="formCategory" required>
+              <option value="Technology">Technology</option>
+              <option value="Sustainability">Sustainability</option>
+              <option value="Education">Education</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Civic Tech">Civic Tech</option>
+              <option value="Creative">Creative</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group half">
+            <label for="formStage">Initial Stage</label>
+            <select id="formStage">
+              <option value="Discovery">Discovery (Initial Concept)</option>
+              <option value="Discussion">Discussion (Gathering Feedback)</option>
+              <option value="Looking for Team">Looking for Team</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formDescription">Description & Vision <span class="required">*</span></label>
+          <textarea id="formDescription" required rows="4" placeholder="Describe the problem, your proposed solution, and what kind of bridge or impact you wish to build..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="formTags">Tags (comma-separated)</label>
+          <input type="text" id="formTags" placeholder="e.g., python, machine-learning, climate, open-data">
+        </div>
+
+        <div class="form-group">
+          <label for="formTargetRole">Collaborator Roles Desired</label>
+          <input type="text" id="formTargetRole" placeholder="e.g., Full Stack Engineer, UX Designer, Content Writer">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="formAuthorName">Your Name / Handle <span class="required">*</span></label>
+            <input type="text" id="formAuthorName" required placeholder="e.g., Taylor Swift" maxlength="60">
+          </div>
+          <div class="form-group half">
+            <label for="formAuthorEmail">Contact Email</label>
+            <input type="email" id="formAuthorEmail" placeholder="e.g., taylor@example.com">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelNewModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitIdea">Publish Idea Bridge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Idea Detail & Discussion View -->
+  <div id="detailModal" class="modal-overlay hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="header-badges">
+          <span id="detailCategory" class="badge badge-category">Category</span>
+          <span id="detailStage" class="badge badge-stage">Stage</span>
+        </div>
+        <button class="modal-close" id="btnCloseDetailModal">&times;</button>
+      </div>
+
+      <div class="modal-body detail-body">
+        <h2 id="detailTitle" class="detail-title">Idea Title</h2>
+        <div class="detail-meta">
+          <span>By <strong id="detailAuthor">Author</strong></span> &bull;
+          <span id="detailDate">Date</span> &bull;
+          <span id="detailVotes">0 votes</span>
+        </div>
+
+        <div class="detail-section">
+          <h4>About this Bridge</h4>
+          <p id="detailDescription" class="detail-description"></p>
+        </div>
+
+        <div class="detail-section" id="detailTagsSection">
+          <h4>Tags</h4>
+          <div id="detailTagsList" class="tags-list"></div>
+        </div>
+
+        <div class="detail-section stage-progression-box">
+          <div class="stage-flow-header">
+            <h4>Bridge Stage Workflow</h4>
+            <div class="stage-actions">
+              <label for="advanceStageSelect">Move Stage:</label>
+              <select id="advanceStageSelect">
+                <option value="Discovery">Discovery</option>
+                <option value="Discussion">Discussion</option>
+                <option value="Looking for Team">Looking for Team</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <button id="btnUpdateStage" class="btn btn-small btn-primary">Update</button>
+            </div>
+          </div>
+          <div class="stages-stepper" id="stagesStepper">
+            <div class="step-node" data-stage="Discovery">1. Discovery</div>
+            <div class="step-connector"></div>
+            <div class="step-node" data-stage="Discussion">2. Discussion</div>
+            <div class="step-connector"></div>
+            <div class="step-node" data-stage="Looking for Team">3. Team Building</div>
+            <div class="step-connector"></div>
+            <div class="step-node" data-stage="In Progress">4. In Progress</div>
+            <div class="step-connector"></div>
+            <div class="step-node" data-stage="Completed">5. Completed</div>
+          </div>
+        </div>
+
+        <!-- Collaborators & Team -->
+        <div class="detail-section">
+          <div class="section-title-row">
+            <h4>Collaborators & Builders (<span id="collaboratorsCount">0</span>)</h4>
+            <button id="btnToggleJoin" class="btn btn-small btn-outline">🤝 Join as Collaborator</button>
+          </div>
+
+          <!-- Join Form (collapsible) -->
+          <form id="joinForm" class="join-form hidden">
+            <h5>Join this Project Bridge</h5>
+            <div class="form-row">
+              <input type="text" id="joinName" placeholder="Your Name *" required>
+              <input type="text" id="joinRole" placeholder="Role (e.g. Lead Dev, Designer) *" required>
+              <input type="text" id="joinContact" placeholder="Contact/Link (email, GitHub, Discord)">
+            </div>
+            <div class="form-actions-right">
+              <button type="button" class="btn btn-small btn-secondary" id="btnCancelJoin">Cancel</button>
+              <button type="submit" class="btn btn-small btn-primary">Submit Application</button>
+            </div>
+          </form>
+
+          <div id="collaboratorsList" class="collaborators-roster">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Comments & Feedback -->
+        <div class="detail-section">
+          <h4>Discussion & Feedback (<span id="commentsCount">0</span>)</h4>
+          <form id="commentForm" class="comment-form">
+            <input type="text" id="commentAuthor" placeholder="Your name (optional)" maxlength="50">
+            <textarea id="commentContent" rows="2" placeholder="Leave thoughtful feedback, suggestions, or ask questions..." required></textarea>
+            <div class="comment-form-actions">
+              <button type="submit" class="btn btn-primary btn-small">Post Comment</button>
+            </div>
+          </form>
+
+          <div id="commentsList" class="comments-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer detail-footer">
+        <button id="btnVoteDetail" class="btn btn-outline">
+          👍 Upvote (<span id="detailVoteCount">0</span>)
+        </button>
+        <button id="btnDeleteIdea" class="btn btn-danger-outline">Delete Idea</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Idea Bridge &copy; 2025 &bull; Empowering makers, builders, and dreamers.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
